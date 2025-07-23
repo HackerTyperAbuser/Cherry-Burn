@@ -7,7 +7,7 @@ public interface IUserService
     public Task<UserResponseDto> RegisterUserAsync(UserCreateDto user);
     public Task<UserResponseDto?> GetUserByIdAsync(Guid id);
     public Task<UserResponseDto> UpdateUserAsync(UserCreateDto user, Guid id);
-    // public Task<UserResponseDto> DeleteUserAsync(Guid id);
+    public Task<bool> DeleteUserAsync(Guid id);
 
 }
 
@@ -95,7 +95,17 @@ public class UserService : IUserService
         var updatedUser = await _userRepository.UpdateUser(existingUser);
 
         return MapToUserResponseDto(updatedUser);
-    
+
+    }
+
+    public async Task<bool> DeleteUserAsync(Guid id)
+    {
+        var status = await _userRepository.DeleteUser(id);
+        if (status == false)
+        {
+            return false;
+        }
+        return true;
     }
 
 }

@@ -87,12 +87,34 @@ namespace Users.Controller
                 return Ok(new
                 {
                     message = "User have been updated!",
-                    data  = updatedUser ,
+                    data = updatedUser,
                 });
             }
             catch (Exception e)
             {
-                return StatusCode(500, new { error = e.Message }); 
+                return StatusCode(500, new { error = e.Message });
+            }
+        }
+
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            try
+            {
+                var status = await _userService.DeleteUserAsync(id);
+                if (status)
+                {
+                    return Ok(new
+                    {
+                        message = "User have been deleted"
+                    });
+                }
+                return StatusCode(500, new { error = "Fail to remove user" });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new { error = e.Message });
             }
         }
     }

@@ -10,6 +10,7 @@ public interface IUserRepository
     Task<User?> GetUserById(Guid id);
     Task<User> CreateUser(User usersDto);
     Task<User> UpdateUser(User usersDto);
+    Task<bool> DeleteUser(Guid id);
 }
 
 public class UserRepository : IUserRepository
@@ -59,5 +60,18 @@ public class UserRepository : IUserRepository
         _context.User.Update(user);
         await _context.SaveChangesAsync();
         return user;
+    }
+
+    public async Task<bool> DeleteUser(Guid id)
+    {
+        var user = await GetUserById(id);
+        if (user == null)
+        {
+            return false;
+        }
+
+        _context.User.Remove(user);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }
