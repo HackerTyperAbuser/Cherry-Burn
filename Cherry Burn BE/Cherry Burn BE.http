@@ -1,0 +1,15 @@
+@Cherry_Burn_BE_HostAddress = http://localhost:5036
+
+POST {{Cherry_Burn_BE_HostAddress}}/api/users/register
+Content-Type: application/json
+
+{
+    "username": "Hiep",
+    "email": "test2@test.com",
+    "password": "Password1!",
+    "description": "This is a test description!"
+}
+
+###
+
+GET {{Cherry_Burn_BE_HostAddress}}/api/users/user%40example.com
