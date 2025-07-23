@@ -9,11 +9,11 @@ namespace Users.Controller
     public class UserController : ControllerBase
     {
 
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserService userService)
         {
-            _userRepository = userRepository;
+            _userService = userService;
         }
 
         [HttpPost]
@@ -22,41 +22,36 @@ namespace Users.Controller
         {
             try
             {
-                var createdUser = await _userRepository.CreateUserAsync(user);
-
-                if (createdUser == null)
-                {
-                    return BadRequest(new { error = "User could not be created" });
-                }
-
-                var responseUser = new UserResponseDto
-                {
-                    Username = createdUser.Username,
-                    Email = createdUser.Email,
-                };
-
-                return Ok(createdUser);
+                var responseUser = await _userService.RegisterUserAsync(user);
+                return Ok(responseUser);
             }
-            catch (Exception e)
+            catch (InvalidOperationException ex)
             {
-                return StatusCode(500, new { error = e.Message });
+                return StatusCode(500, new { error = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
             }
         }
 
         [HttpGet]
-        [Route("{email}")]
-        public async Task<IActionResult> GetUserByEmail(string email)
+        [Route("{id:guid}")]
+        public async Task<IActionResult> FindUserId(Guid id)
         {
             try
             {
-                Console.WriteLine($"Received email: {email}");
-                var foundUser = await _userRepository.GetUserByEmailAsync(email);
+                var foundUser = await _userService.GetUserByIdAsync(id);
 
                 if (foundUser == null)
                 {
                     return BadRequest(new
                     {
-                        error = "No user with that email"
+                        error = "User not found"
                     });
                 }
 
