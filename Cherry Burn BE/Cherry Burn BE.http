@@ -5,10 +5,10 @@ POST {{Cherry_Burn_BE_HostAddress}}/api/users/register
 Content-Type: application/json
 
 {
-    "username": "Hiep4",
-    "email": "test4@test.com",
+    "username": "Hiep10",
+    "email": "newest@test.com",
     "password": "Password1!",
-    "description": "This is a test description4!"
+    "description": "This is a test descriptionsss!"
 }
 
 ###
@@ -22,7 +22,14 @@ GET {{Cherry_Burn_BE_HostAddress}}/api/users/482484e5-f2cc-4f53-b003-bfa38593cf5
 ###
 
 // Update user information
+POST {{Cherry_Burn_BE_HostAddress}}/api/users/482484e5-f2cc-4f53-b003-bfa38593cf5d
+Content-Type: application/json
 
+{
+    "username": "Hiep5",
+    "description": "This is updated description!"
+}
 
 ###
 // Delete user
+DELETE {{Cherry_Burn_BE_HostAddress}}/api/users/482484e5-f2cc-4f53-b003-bfa38593cf5d

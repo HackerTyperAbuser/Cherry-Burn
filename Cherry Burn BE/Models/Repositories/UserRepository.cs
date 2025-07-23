@@ -9,6 +9,7 @@ public interface IUserRepository
     Task<User?> GetUserByEmail(string email);
     Task<User?> GetUserById(Guid id);
     Task<User> CreateUser(User usersDto);
+    Task<User> UpdateUser(User usersDto);
 }
 
 public class UserRepository : IUserRepository
@@ -50,6 +51,13 @@ public class UserRepository : IUserRepository
         await _context.User.AddAsync(user);
         await _context.SaveChangesAsync();
 
+        return user;
+    }
+
+    public async Task<User> UpdateUser(User user)
+    {
+        _context.User.Update(user);
+        await _context.SaveChangesAsync();
         return user;
     }
 }

@@ -6,6 +6,9 @@ public interface IUserService
     public Task<List<UserResponseDto>> GetAllUsersAsync();
     public Task<UserResponseDto> RegisterUserAsync(UserCreateDto user);
     public Task<UserResponseDto?> GetUserByIdAsync(Guid id);
+    public Task<UserResponseDto> UpdateUserAsync(UserCreateDto user, Guid id);
+    // public Task<UserResponseDto> DeleteUserAsync(Guid id);
+
 }
 
 public class UserService : IUserService
@@ -66,6 +69,33 @@ public class UserService : IUserService
         }
 
         return MapToUserResponseDto(foundUser);
+    }
+
+    public async Task<UserResponseDto> UpdateUserAsync(UserCreateDto user, Guid id)
+    {
+        var existingUser = await _userRepository.GetUserById(id);
+        if (existingUser == null)
+            throw new InvalidOperationException("User not found");
+
+        if (!string.IsNullOrWhiteSpace(user.Username))
+        {
+            existingUser.Username = user.Username;
+        }
+
+        if (!string.IsNullOrWhiteSpace(user.Email))
+        {
+            existingUser.Email = user.Email;
+        }
+
+        if (!string.IsNullOrWhiteSpace(user.Description))
+        {
+            existingUser.Description = user.Description;
+        }
+
+        var updatedUser = await _userRepository.UpdateUser(existingUser);
+
+        return MapToUserResponseDto(updatedUser);
+    
     }
 
 }

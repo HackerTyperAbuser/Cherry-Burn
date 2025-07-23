@@ -76,6 +76,25 @@ namespace Users.Controller
                 return StatusCode(500, new { error = e.Message });
             }
         }
+
+        [HttpPost]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> UpdateUser([FromBody] UserCreateDto user, Guid id)
+        {
+            try
+            {
+                var updatedUser = await _userService.UpdateUserAsync(user, id);
+                return Ok(new
+                {
+                    message = "User have been updated!",
+                    data  = updatedUser ,
+                });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new { error = e.Message }); 
+            }
+        }
     }
 
 }
