@@ -5,6 +5,7 @@ using Users.Api.Entity;
 
 public interface IUserRepository
 {
+    Task<List<User>> GetAllUsers();
     Task<User?> GetUserByEmail(string email);
     Task<User?> GetUserById(Guid id);
     Task<User> CreateUser(User usersDto);
@@ -17,6 +18,12 @@ public class UserRepository : IUserRepository
     {
         _context = context;
     }
+
+    public async Task<List<User>> GetAllUsers()
+    {
+        return await _context.User.ToListAsync();
+    }
+
 
     public async Task<User?> GetUserByEmail(string email)
     {

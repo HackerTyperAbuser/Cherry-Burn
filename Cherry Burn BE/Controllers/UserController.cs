@@ -40,6 +40,20 @@ namespace Users.Controller
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            try
+            {
+                var users = await _userService.GetAllUsersAsync();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        [HttpGet]
         [Route("{id:guid}")]
         public async Task<IActionResult> FindUserId(Guid id)
         {

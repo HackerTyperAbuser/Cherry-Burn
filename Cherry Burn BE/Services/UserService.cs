@@ -3,6 +3,7 @@ using Users.Api.Entity;
 
 public interface IUserService
 {
+    public Task<List<UserResponseDto>> GetAllUsersAsync();
     public Task<UserResponseDto> RegisterUserAsync(UserCreateDto user);
     public Task<UserResponseDto?> GetUserByIdAsync(Guid id);
 }
@@ -24,6 +25,13 @@ public class UserService : IUserService
             Email = user.Email,
             Description = user.Description
         };
+    }
+
+    public async Task<List<UserResponseDto>> GetAllUsersAsync()
+    {
+        var users = await _userRepository.GetAllUsers();
+
+        return users.Select(user => MapToUserResponseDto(user)).ToList();
     }
 
     public async Task<UserResponseDto> RegisterUserAsync(UserCreateDto user)
