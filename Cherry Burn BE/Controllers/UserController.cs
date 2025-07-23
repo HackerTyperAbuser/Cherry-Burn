@@ -9,11 +9,11 @@ namespace Users.Controller
     public class UserController : ControllerBase
     {
 
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserService userService)
         {
-            _userRepository = userRepository;
+            _userService = userService;
         }
 
         [HttpPost]
@@ -22,20 +22,54 @@ namespace Users.Controller
         {
             try
             {
-                var createdUser = await _userRepository.CreateUserAsync(user);
+                var responseUser = await _userService.RegisterUserAsync(user);
+                return Ok(responseUser);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
 
-                if (createdUser == null)
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            try
+            {
+                var users = await _userService.GetAllUsersAsync();
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> FindUserId(Guid id)
+        {
+            try
+            {
+                var foundUser = await _userService.GetUserByIdAsync(id);
+
+                if (foundUser == null)
                 {
-                    return BadRequest(new { error = "User could not be created" });
+                    return BadRequest(new
+                    {
+                        error = "User not found"
+                    });
                 }
 
-                var responseUser = new UserResponseDto
-                {
-                    Username = createdUser.Username,
-                    Email = createdUser.Email,
-                };
-
-                return Ok(createdUser);
+                return Ok(foundUser);
             }
             catch (Exception e)
             {
@@ -43,24 +77,40 @@ namespace Users.Controller
             }
         }
 
-        [HttpGet]
-        [Route("{email}")]
-        public async Task<IActionResult> GetUserByEmail(string email)
+        [HttpPost]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> UpdateUser([FromBody] UserCreateDto user, Guid id)
         {
             try
             {
-                Console.WriteLine($"Received email: {email}");
-                var foundUser = await _userRepository.GetUserByEmailAsync(email);
-
-                if (foundUser == null)
+                var updatedUser = await _userService.UpdateUserAsync(user, id);
+                return Ok(new
                 {
-                    return BadRequest(new
+                    message = "User have been updated!",
+                    data = updatedUser,
+                });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new { error = e.Message });
+            }
+        }
+
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            try
+            {
+                var status = await _userService.DeleteUserAsync(id);
+                if (status)
+                {
+                    return Ok(new
                     {
-                        error = "No user with that email"
+                        message = "User have been deleted"
                     });
                 }
-
-                return Ok(foundUser);
+                return StatusCode(500, new { error = "Fail to remove user" });
             }
             catch (Exception e)
             {

@@ -3,6 +3,16 @@ using Microsoft.EntityFrameworkCore;
 using Users.Api.Dto;
 using Users.Api.Entity;
 
+public interface IUserRepository
+{
+    Task<List<User>> GetAllUsers();
+    Task<User?> GetUserByEmail(string email);
+    Task<User?> GetUserById(Guid id);
+    Task<User> CreateUser(User usersDto);
+    Task<User> UpdateUser(User usersDto);
+    Task<bool> DeleteUser(Guid id);
+}
+
 public class UserRepository : IUserRepository
 {
     private readonly ApplicationDbContext _context;
@@ -11,51 +21,57 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public async Task<UserResponseDto?> GetUserByEmailAsync(string email)
+    public async Task<List<User>> GetAllUsers()
+    {
+        return await _context.User.ToListAsync();
+    }
+
+
+    public async Task<User?> GetUserByEmail(string email)
     {
         User? foundUser = await _context.User.FirstOrDefaultAsync(user => user.Email == email);
 
         if (foundUser == null)
             return null;
 
-        var returnUser = new UserResponseDto
-        {
-            Username = foundUser.Username,
-            Email = foundUser.Email,
-            Description = foundUser.Description
-        };
-
-        return returnUser;
+        return foundUser;
     }
 
-    public async Task<UserResponseDto?> CreateUserAsync(UserCreateDto user)
+    public async Task<User?> GetUserById(Guid id)
     {
-        if (string.IsNullOrWhiteSpace(user.Email) || string.IsNullOrWhiteSpace(user.Password))
-            throw new ArgumentException("Email and password are required");
+        User? foundUser = await _context.User.FirstOrDefaultAsync(user => user.Id == id);
 
-        var existingUser = await GetUserByEmailAsync(user.Email);
+        if (foundUser == null)
+            return null;
 
-        if (existingUser != null)
-            throw new InvalidOperationException("User with this email already exists");
+        return foundUser;
+    }
 
-        var newUser = new User
-        {
-            Username = user.Username,
-            Email = user.Email,
-            Description = user.Description,
-            Password = user.Password,
-        };
-
-        await _context.User.AddAsync(newUser);
+    public async Task<User> CreateUser(User user)
+    {
+        await _context.User.AddAsync(user);
         await _context.SaveChangesAsync();
 
-        var responseUser = new UserResponseDto
-        {
-            Username = user.Username,
-            Email = user.Email,
-            Description = user.Description,
-        };
+        return user;
+    }
 
-        return responseUser;
+    public async Task<User> UpdateUser(User user)
+    {
+        _context.User.Update(user);
+        await _context.SaveChangesAsync();
+        return user;
+    }
+
+    public async Task<bool> DeleteUser(Guid id)
+    {
+        var user = await GetUserById(id);
+        if (user == null)
+        {
+            return false;
+        }
+
+        _context.User.Remove(user);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

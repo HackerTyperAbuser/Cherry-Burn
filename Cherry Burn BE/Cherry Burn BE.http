@@ -1,15 +1,35 @@
 @Cherry_Burn_BE_HostAddress = http://localhost:5036
 
+// Create new user
 POST {{Cherry_Burn_BE_HostAddress}}/api/users/register
 Content-Type: application/json
 
 {
-    "username": "Hiep",
-    "email": "test2@test.com",
+    "username": "Hiep10",
+    "email": "newest@test.com",
     "password": "Password1!",
-    "description": "This is a test description!"
+    "description": "This is a test descriptionsss!"
 }
 
 ###
+// Get all users
+GET {{Cherry_Burn_BE_HostAddress}}/api/users
 
-GET {{Cherry_Burn_BE_HostAddress}}/api/users/user%40example.com
+###
+// Read user information
+GET {{Cherry_Burn_BE_HostAddress}}/api/users/482484e5-f2cc-4f53-b003-bfa38593cf5d
+
+###
+
+// Update user information
+POST {{Cherry_Burn_BE_HostAddress}}/api/users/482484e5-f2cc-4f53-b003-bfa38593cf5d
+Content-Type: application/json
+
+{
+    "username": "Hiep5",
+    "description": "This is updated description!"
+}
+
+###
+// Delete user
+DELETE {{Cherry_Burn_BE_HostAddress}}/api/users/482484e5-f2cc-4f53-b003-bfa38593cf5d

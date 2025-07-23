@@ -11,15 +11,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = "Host=localhost;Port=5432;Database=mydatabase;Username=myuser;Password=mypassword";
-
-if (string.IsNullOrWhiteSpace(connectionString))
-    throw new InvalidOperationException("Connection string could not be built from environment variables.");
+var connectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection")
+        ?? throw new InvalidOperationException("Connection string"
+        + "'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 builder.Services.AddControllers();
 
