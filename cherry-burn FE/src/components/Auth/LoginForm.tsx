@@ -42,7 +42,7 @@ export function LoginForm() {
         <form onSubmit={handleSubmit} className="w-full space-y-6 mt-8 text-base">
             <button
                 type="button"
-                className="w-full border border-gray-300 rounded-full py-3 px-6 text-base hover:bg-gray-100 transition">
+                className="w-full cursor-pointer accent-black border border-gray-300 rounded-full py-3 px-6 text-base hover:bg-gray-100 transition">
                 Login with Google
             </button>
 
@@ -54,7 +54,7 @@ export function LoginForm() {
             
             {/* Username */}
             <input 
-                className="w-full border text-base border-gray-300 rounded-full focus:outline-non focus:ring-blue-400 focus:ring-2 py-3 px-5"
+                className="w-full border text-base accent-black border-gray-300 rounded-full focus:outline-non focus:ring-black focus:ring-2 py-3 px-5"
                 type="text" 
                 placeholder="Username" 
                 value={username} 
@@ -62,7 +62,7 @@ export function LoginForm() {
 
             {/* Password */}
             <input 
-                className="w-full border text-base border-gray-300 rounded-full focus:outline-non focus:ring-blue-400 focus:ring-2 py-3 px-5"
+                className="w-full border text-base accent-black border-gray-300 rounded-full focus:outline-non focus:ring-black focus:ring-2 py-3 px-5"
                 type="password" 
                 placeholder="Password" 
                 value={password} 
@@ -78,7 +78,7 @@ export function LoginForm() {
                 <input 
                     type="checkbox" 
                     id="remember" 
-                    className="w-5 h-5 rounded-sm focus:ring-blue-800 transition"/>
+                    className="w-5 h-5 rounded-sm accent-black text-white border border-black focus:ring-black transition"/>
                 <label 
                     htmlFor="remember" 
                     className="text-gray-700">
@@ -87,14 +87,14 @@ export function LoginForm() {
             </div>
 
             {/* Submit Button */}
-            <button className="w-full text-white py-3 px-6 rounded-full bg-blue-800 hover:bg-blue-900 transition border-black border text-lg">
+            <button className="w-full accent-black cursor-pointer text-white py-3 px-6 rounded-full bg-black hover:bg-gray-800 transition border-black border text-lg focus:ring-black">
                 Login
             </button>
 
             {/* Link to Register */}
             <p className="text-center text-base text-gray-600">
                 Don't have an account? {""}
-                <Link to="/register" className="text-blue-600 hover:text-blue-800 hover:underline">
+                <Link to="/register" className="text-black accent-black hover:text-gray-800 hover:underline">
                 Signup</Link>
             </p>
         </form>
