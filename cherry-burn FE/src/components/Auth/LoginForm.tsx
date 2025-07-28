@@ -1,25 +1,29 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { loginUser } from "../../features/auth/api";
+import { EyeToggle } from "./PasswordEyeToggle";
 
 export function LoginForm() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const [error, setError] = useState<string>("");
     const [success, setSuccess] = useState<boolean>(false);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
 
     useEffect(() => {
         if (error) {
             
             const timer = setTimeout(() => {
                 setError("");
-            }, 3000);
+            }, 5000);
             return () => clearTimeout(timer);
         }
     }, [error]);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
+        setError("");
+        setSuccess(false);
 
         if (!username || !password) {
             setError("Please enter both username and password.");
@@ -31,7 +35,9 @@ export function LoginForm() {
             const data = await loginUser(username, password);
             console.log("Login successful:", JSON.stringify(data));
             setSuccess(true);
-            return true;
+            setTimeout(() => {
+                setSuccess(false);
+            }, 5000);
         }
         catch (err) {
             console.error("Login failed", err);
@@ -63,12 +69,15 @@ export function LoginForm() {
                 onChange={(e) => setUsername(e.target.value)}/>
 
             {/* Password */}
-            <input 
-                className="w-full border text-base accent-black border-gray-300 rounded-full focus:outline-non focus:ring-black focus:ring-2 py-3 px-5"
-                type="password" 
-                placeholder="Password" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)}/>
+            <div className="relative w-full">
+                <input 
+                    className="w-full border text-base accent-black border-gray-300 rounded-full focus:outline-non focus:ring-black focus:ring-2 py-3 px-5"
+                    type={showPassword ? 'text' : 'password'} 
+                    placeholder="Password" 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)}/>
+                <EyeToggle showPassword={showPassword} setShowPassword={setShowPassword}/>
+            </div>
             
             {/* Alert messages */}
             <div className="mt-1 ml-2 min-h-[20px]">
