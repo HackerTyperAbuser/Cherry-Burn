@@ -1,13 +1,16 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Users.Api.Dto
 {
     public class UserResponseDto
     {
-        public string Username { get; set; }
-
-        public string Email { get; set; }
+        public Guid? Id { get; set; }
+        public string? Username { get; set; }
+        public string? Email { get; set; }
         public string? Description { get; set; }
+    }
+    public class UserLoginDto
+    {
+        public string? Username { get; set; }
+        public string? Password { get; set; }
     }
 
 }

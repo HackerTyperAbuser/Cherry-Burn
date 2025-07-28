@@ -6,6 +6,7 @@ export function LoginForm() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState<boolean>(false);
 
     useEffect(() => {
         if (error) {
@@ -28,8 +29,9 @@ export function LoginForm() {
         try
         {
             const data = await loginUser(username, password);
-            localStorage.setItem("token", data.token);
-            setError("");
+            console.log("Login successful:", JSON.stringify(data));
+            setSuccess(true);
+            return true;
         }
         catch (err) {
             console.error("Login failed", err);
@@ -68,9 +70,14 @@ export function LoginForm() {
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)}/>
             
-            {/* Error message */}
+            {/* Alert messages */}
             <div className="mt-1 ml-2 min-h-[20px]">
-                <p className={`text-red-700 text-sm transition-opacity ease-in-out ${ error ? "opacity-100 duration-0" : "opacity-0 duration-700"}`}>{error}</p>
+                <p
+                    className={`text-sm transition-opacity ease-in-out 
+                        ${error ? "text-red-700 opacity-100 duration-0" : success ? "text-green-700 opacity-100 duration-0" : "opacity-0 duration-700"}`}
+                >
+                    {error || (success ? "Login successful!" : "")}
+                </p>
             </div>
 
             {/* Remember Checkbox */}
@@ -78,7 +85,7 @@ export function LoginForm() {
                 <input 
                     type="checkbox" 
                     id="remember" 
-                    className="w-5 h-5 rounded-sm accent-black text-white border border-black focus:ring-black transition"/>
+                    className="cursor-pointer w-5 h-5 rounded-sm accent-black text-white border border-black focus:ring-black transition"/>
                 <label 
                     htmlFor="remember" 
                     className="text-gray-700">
@@ -92,9 +99,9 @@ export function LoginForm() {
             </button>
 
             {/* Link to Register */}
-            <p className="text-center text-base text-gray-600">
+            <p className="text-center text-base text-gray-700">
                 Don't have an account? {""}
-                <Link to="/register" className="text-black accent-black hover:text-gray-800 hover:underline">
+                <Link to="/register" className="text-gray-700 accent-black hover:text-gray-500 hover:underline">
                 Signup</Link>
             </p>
         </form>

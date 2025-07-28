@@ -5,6 +5,7 @@ public interface IUserService
 {
     public Task<List<UserResponseDto>> GetAllUsersAsync();
     public Task<UserResponseDto> RegisterUserAsync(UserCreateDto user);
+    public Task<UserResponseDto?> LoginUserAsync(UserLoginDto user);
     public Task<UserResponseDto?> GetUserByIdAsync(Guid id);
     public Task<UserResponseDto> UpdateUserAsync(UserCreateDto user, Guid id);
     public Task<bool> DeleteUserAsync(Guid id);
@@ -58,6 +59,36 @@ public class UserService : IUserService
         var createdUser = await _userRepository.CreateUser(newUser);
 
         return MapToUserResponseDto(createdUser);
+    }
+
+    public async Task<UserResponseDto?> LoginUserAsync(UserLoginDto user)
+    {
+        if (string.IsNullOrWhiteSpace(user.Password) || string.IsNullOrWhiteSpace(user.Username))
+        {
+            return null;
+        }
+
+        var existingUser = await _userRepository.GetUserByUsername(user.Username);
+
+        if (existingUser == null)
+        {
+            return null;
+        }
+
+        if (existingUser.Password != user.Password)
+        {
+            return null;
+        }
+
+        var responseUser = new UserResponseDto
+        {
+            Id = existingUser.Id,
+            Email = existingUser.Email,
+            Username = existingUser.Username,
+            Description = existingUser.Description,
+        };
+
+        return responseUser;
     }
 
     public async Task<UserResponseDto?> GetUserByIdAsync(Guid id)

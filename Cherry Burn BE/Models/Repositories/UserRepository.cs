@@ -8,6 +8,7 @@ public interface IUserRepository
     Task<List<User>> GetAllUsers();
     Task<User?> GetUserByEmail(string email);
     Task<User?> GetUserById(Guid id);
+    Task<User?> GetUserByUsername(string username);
     Task<User> CreateUser(User usersDto);
     Task<User> UpdateUser(User usersDto);
     Task<bool> DeleteUser(Guid id);
@@ -44,6 +45,17 @@ public class UserRepository : IUserRepository
         if (foundUser == null)
             return null;
 
+        return foundUser;
+    }
+
+    public async Task<User?> GetUserByUsername(string username)
+    {
+        User? foundUser = await _context.User.FirstOrDefaultAsync(user => user.Username == username);
+
+        if (foundUser == null)
+        {
+            return null;
+        }
         return foundUser;
     }
 
