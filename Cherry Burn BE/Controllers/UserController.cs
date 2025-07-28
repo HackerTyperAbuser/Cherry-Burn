@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Users.Api.Dto;
-using Users.Api.Entity;
 
 namespace Users.Controller
 {
@@ -8,7 +7,6 @@ namespace Users.Controller
     [Route("api/users")]
     public class UserController : ControllerBase
     {
-
         private readonly IUserService _userService;
 
         public UserController(IUserService userService)

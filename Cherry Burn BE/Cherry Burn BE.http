@@ -33,3 +33,13 @@ Content-Type: application/json
 ###
 // Delete user
 DELETE {{Cherry_Burn_BE_HostAddress}}/api/users/482484e5-f2cc-4f53-b003-bfa38593cf5d
+
+###
+// Login User
+POST {{Cherry_Burn_BE_HostAddress}}/api/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "username": "Hiep3",
+    "password": "Password1!"
+}
